@@ -3,10 +3,11 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from alien_invasion import AlienInvasion
+    from arsenal import Arsenal
 
 class Ship:
 
-    def __init__(self, game: 'AlienInvasion'):
+    def __init__(self, game: 'AlienInvasion', arsenal: 'Arsenal'):
 
         self.game = game
         self.settings = game.settings
@@ -25,19 +26,28 @@ class Ship:
         self.moving_right = False
         self.moving_left = False
         self.x_pos = float(self.rect.x)
+        self.arsenal = arsenal
 
     def update(self):
-        #update ships position based on movement flags
+        
+        self._update_ship_movement()
+        self.arsenal.update_arsenal()
+
+    def _update_ship_movement(self):
         temp_speed = self.settings.ship_speed
-        #if flag is true and ship is within boundaries, move in that direction
+        #if movement flag is true and ship is within boundaries, move
         if self.moving_right and self.rect.right < self.boundaries.right:
             self.x_pos += temp_speed
         if self.moving_left and self.rect.left > self.boundaries.left:
             self.x_pos -= temp_speed
 
-        # Update the ships hitbox position
+        #update hitbox position based on ship movement
         self.rect.x = self.x_pos
 
 
     def draw(self):
+        self.arsenal.draw()
         self.screen.blit(self.image, self.rect)
+    
+    def fire(self):
+        return self.arsenal.fire_bullet()
