@@ -24,21 +24,31 @@ class AlienInvasion:
         #set up ship
         self.ship = Ship(self)
 
+
     def run_game(self):
         #Game loop
         while self.running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                    pygame.quit()
-                    sys.exit()
+            #call event listener function
+            self._check_events()
+            #call update screen function
+            self._update_screen() 
+            self.clock.tick(self.settings.FPS)
 
-            #set draw background image        
-            self.screen.blit(self.bg, (0, 0))
-            #set draw ship
-            self.ship.draw()
-            pygame.display.flip()
-            self.clock.tick(self.settings.FPS)  # Limit to 60 FPS
+
+    def _update_screen(self):
+        #draw background image to screen
+        self.screen.blit(self.bg, (0, 0))
+        #draw ship to screen and update display    
+        self.ship.draw()
+        pygame.display.flip()
+
+    def _check_events(self):
+        """Listener function Respond to keypresses and events."""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+                pygame.quit()
+                sys.exit() # Limit to 60 FPS
 
 
 if __name__ == '__main__':
